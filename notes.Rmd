@@ -1,0 +1,11 @@
+# Required packages
+
+BiocParallel
+GenomicAlignments
+GenomicRanges
+GenomicFiles
+IRanges
+RNAseqData.HNRNPC.bam.chr14
+Rsamtools
+microbenchmark
+TxDb.Hsapiens.UCSC.hg19.knownGene

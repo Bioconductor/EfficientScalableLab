@@ -1,0 +1,6 @@
+import(IRanges)
+import(GenomicRanges)
+import(BiocParallel)
+import(GenomicAlignments)
+import(GenomicFiles)
+import(Rsamtools)
