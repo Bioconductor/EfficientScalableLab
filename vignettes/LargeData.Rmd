@@ -10,12 +10,13 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-```{r style, echo = FALSE, results = 'asis'}
+```{r style, echo=FALSE, results='asis'}
 BiocStyle::markdown()
 ```
 
-```{r setup, echo=FALSE}
-knitr::opts_chunk$set(cache=TRUE)
+```{r setup, echo=FALSE, results='hide'}
+library(knitr)
+opts_chunk$set(cache=TRUE, error=FALSE)
 ```
 
 Authors: Valerie Obenchain (<a
@@ -81,6 +82,7 @@ and efficient R code.
      `r Biocpkg("GenomicRanges")`, `r Biocpkg("Biostrings")`, ...,
      `r CRANpkg("dplyr")`, `r CRANpkg("data.table")`, `r CRANpkg("Rcpp")`
 
+<a href="#top">Back to top</a>
 
 ### Case Study: Pre-allocate and vectorize 
 
@@ -188,6 +190,8 @@ Lessons learned:
 4. Hoisting common sub-expressions can be helpful for improving 
    performance when explicit iteration is required.
 
+<a href="#top">Back to top</a>
+
 
 # Iteration and restriction to manage memory
 
@@ -207,6 +211,7 @@ Restriction
    -- BAM files and `Rsamtools::PileupParam()`
    -- VCF files and `VariantAnnotation::ScanVcfParam()`
    - Use a data base
+
 
 ## Exercise: Counting overlaps
 
@@ -262,7 +267,7 @@ Regions of interest, named like the chromosomes in the bam file.
 ```{r count-overlaps-roi, eval=FALSE}
 exByTx <- exonsBy(TxDb.Hsapiens.UCSC.hg19.knownGene, "tx")
 
-fl <- system.file("extdata", "hg19_alias.tab", package="BioC2015LargeData")
+fl <- "/home/ubuntu/data/vobencha/LargeData/srarchive/hg19_alias.tab"
 map0 <- read.delim(fl, header=FALSE, stringsAsFactors=FALSE)
 seqlevels(exByTx, force=TRUE) <- setNames(map0$V1, map0$V2)
 ```
@@ -281,9 +286,11 @@ count1 <- function(filename, roi) {
 In action
 
 ```{r count-overlaps-doit, eval=FALSE}
-filename <- "data/vobencha/LargeData/srarchive/SRR1039508_sorted.bam"
-count <- count1(filename, exByTx)
+bam <- "/home/ubuntu/data/vobencha/LargeData/srarchive/SRR1039508_sorted.bam"
+count <- count1(bam, exByTx)
 ```
+<a href="#top">Back to top</a>
+
 
 # File management
 
@@ -332,15 +339,17 @@ Notes
 - see the GenomicFiles vignette
   [Figure 1](http://bioconductor.org/packages/devel/bioc/vignettes/GenomicFiles/inst/doc/GenomicFiles.pdf)
 
+<a href="#top">Back to top</a>
+
 
 # Parallel evaluation
 
 A couple of caveats -
 
 Iteration / restriction techniques keep the memory requirements under control
-while parallel evaluation distributes the computational load across nodes. 
-When running code in parallel we are still restricted by the amount of memory 
-available on each node.
+while parallel evaluation distributes computational load across nodes. 
+Keep in mind that parallel computations are still restricted by the amount of 
+memory available on each node.
 
 There is overhead in setting up and tearing down a cluster and more so when
 computing in distributed memory. For small calculations, the parallel
@@ -349,13 +358,13 @@ overhead may outweigh the benefits with no improvement in performance.
 Jobs that benefit the most from parallel execution are CPU-intensive
 and operate on data chunks that fits into memory.
 
-
 ## BiocParallel
 
-`r Biocpkg("BiocParallel")` provides a standardized interface for 
-simple parallel evaluation. The package builds provides access to the
-`snow` and `multicore` functionality in the `parallel` package as well
-as `BatchJobs` for running cluster jobs.
+`r Biocpkg("BiocParallel")` provides a standardized interface for parallel
+evaluation and supports the major parallel computing styles: forks and 
+processes on a single computer, ad hoc clusters, batch schedulers and cloud 
+computing. By default, `r Biocpkg("BiocParallel")` chooses a parallel back-end 
+appropriate for the OS and is supported across Unix, Mac and Windows.
 
 General ideas:
 
@@ -396,13 +405,14 @@ f0 <- function(n)
 f1 <- function(n)
     bplapply(seq_len(n), fun)
 ```
+<a href="#top">Back to top</a>
 
 ### Exercise: error handling and `bpredo()` 
 
 `r Biocpkg("BiocParallel")` "catches and returns" errors along with successful
 results. This exercise demonstrates how to access the `traceback()` of
 a failed task and how to re-run the failed tasks with 'BPREDO'.
-Full details on error handling, logging and debugging are in the BiocParallel
+Full details on error handling, logging and debugging are in the
 [Errors, Logs and
 Debugging](http://www.bioconductor.org/packages/3.2/bioc/vignettes/BiocParallel/inst/doc/Errors_Logs_And_Debugging.pdf)
 vignette.
@@ -435,6 +445,7 @@ time with corrected input data and the partial results as 'BPREDO'.
 X.redo <- list(1, 2, 3)
 bplapply(X.redo, sqrt, BPREDO = res)
 ```
+<a href="#top">Back to top</a>
 
 ### Exercise: logging
 
@@ -475,6 +486,7 @@ bplapply(list(1, "2", integer()), FUN, BPPARAM = param)
 Lower the threshold to INFO and DEBUG (i.e., use `bpthreshold<-`) to see how
 messages are filtered on severity.
 
+<a href="#top">Back to top</a>
 
 ### Exercise: Worker timeout
 
@@ -482,7 +494,6 @@ For long running jobs or untested code it can be useful to set a time limit.
 The _timeout_ field is the time, in seconds, allowed for each worker to
 complete a task. If a task takes longer than _timeout_ the worker returns
 an error. 
-
 
 _timeout_ can be set during param construction,
 
@@ -507,6 +518,7 @@ fun <- function(i) {
   i
 }
 ```
+<a href="#top">Back to top</a>
 
 ### Exercise: Counting overlaps in parallel
 
@@ -547,7 +559,7 @@ param <- SnowParam(4, log = TRUE, timeout = 60)
 Point to the collection of bam files.
 
 ```{r co-bams}
-fls <- dir("data/vobencha/LargeData/copynumber", ".bam$", full=TRUE)
+fls <- dir("/home/ubuntu/data/vobencha/LargeData/copynumber", ".bam$", full=TRUE)
 names(fls) <- basename(fls)
 bfl <- BamFileList(fls)
 ```
@@ -604,7 +616,7 @@ Tables of counts for each range are extracted with '[[':
 ```{r co-tables, eval=FALSE}
 cts[[1]]
 ```
-
+<a href="#top">Back to top</a>
 
 ## Other resources
 
@@ -617,6 +629,8 @@ cts[[1]]
 - `r Biocpkg("GoogleGenomics")` to interact with google compute cloud
   and resources
 
+<a href="#top">Back to top</a>
+
 
 # Resources
 
@@ -628,6 +642,4 @@ cts[[1]]
 
 - GenomicFiles: http://bioconductor.org/packages/release/bioc/html/GenomicFiles.html
 
-
-
-
+<a href="#top">Back to top</a>
