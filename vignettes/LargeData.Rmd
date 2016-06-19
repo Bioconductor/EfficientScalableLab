@@ -7,7 +7,6 @@ output:
 vignette: >
   % \VignetteIndexEntry{Lab: Management and analysis of large genomic data}
   % \VignetteEngine{knitr::rmarkdown}
-  % \VignetteDepends{TxDb.Hsapiens.UCSC.hg19.knownGene, rtracklayer}
   \usepackage[utf8]{inputenc}
 ---
 
@@ -22,7 +21,7 @@ opts_chunk$set(cache=TRUE, error=FALSE)
 
 Original Authors: Valerie Obenchain, Martin Morgan<br />
 Presenting Author: Martin Morgan (<a
-  href="mailto:mtmorgan@fredhutch.org">mtmorgan@fredhutch.org</a>)<br />
+  href="mailto:martin.morgan@roswellpark.org">martin.morgan@roswellpark.org</a>)
 Date: 25 June, 2016
 
 # Efficient _R_ code

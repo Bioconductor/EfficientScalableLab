@@ -5,22 +5,21 @@ Description: This package contains lab vignettes, data,
     and short functions for use in short courses addressing efficient, scalable
     code for management and analysis of large genomic data.
 Authors@R: c(
-    person("Valerie", "Obenchain", email="vobencha@fredhutch.org", role="cre"),
-    person("Martin", "Morgan", email="mtmorgan@fredhutch.org", role="aut"))
-Depends:
-    IRanges,
-    GenomicRanges,
+    person("Valerie", "Obenchain", email="vobencha@fredhutch.org", role="aut"),
+    person("Martin", "Morgan", email="mtmorgan@fredhutch.org", role="cre"))
+Suggests:
     BiocParallel,
+    BiocStyle,
     GenomicAlignments,
     GenomicFiles,
-    Rsamtools
-Suggests:
-    BiocStyle,
-    knitr,
-    rmarkdown,
-    microbenchmark,
+    GenomicRanges,
+    IRanges,
     RNAseqData.HNRNPC.bam.chr14,
+    Rsamtools,
     TxDb.Hsapiens.UCSC.hg19.knownGene,
+    knitr,
+    microbenchmark,
+    rmarkdown,
     rtracklayer
 VignetteBuilder: knitr
 License: Artistic-2.0
