@@ -7,6 +7,7 @@ output:
 vignette: >
   % \VignetteIndexEntry{Lab: Management and analysis of large genomic data}
   % \VignetteEngine{knitr::rmarkdown}
+  % \VignetteDepends{TxDb.Hsapiens.UCSC.hg19.knownGene, rtracklayer}
   \usepackage[utf8]{inputenc}
 ---
 

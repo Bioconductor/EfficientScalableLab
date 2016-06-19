@@ -19,7 +19,9 @@ Suggests:
     knitr,
     rmarkdown,
     microbenchmark,
-    RNAseqData.HNRNPC.bam.chr14
+    RNAseqData.HNRNPC.bam.chr14,
+    TxDb.Hsapiens.UCSC.hg19.knownGene,
+    rtracklayer
 VignetteBuilder: knitr
 License: Artistic-2.0
 URL: https://bioconductor.org/help/course-materials
