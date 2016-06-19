@@ -19,12 +19,10 @@ library(knitr)
 opts_chunk$set(cache=TRUE, error=FALSE)
 ```
 
-Authors: Valerie Obenchain (<a
-  href="mailto:vobencha@fredhutch.org">vobencha@fredhutch.org</a>), 
-  Martin Morgan (<a
+Original Authors: Valerie Obenchain, Martin Morgan<br />
+Presenting Author: Martin Morgan (<a
   href="mailto:mtmorgan@fredhutch.org">mtmorgan@fredhutch.org</a>)<br />
-Date: 22 July, 2015
-
+Date: 25 June, 2016
 
 # Efficient _R_ code
 
@@ -339,6 +337,12 @@ Notes
 - see the GenomicFiles vignette
   [Figure 1](http://bioconductor.org/packages/devel/bioc/vignettes/GenomicFiles/inst/doc/GenomicFiles.pdf)
 
+`VcfStack()`
+
+- Common practice of spliting VCF files into one-per-chromosome.
+- Easy way to treat as a signle entitty
+- see `?VcfStack`
+
 <a href="#top">Back to top</a>
 
 
@@ -374,7 +378,6 @@ General ideas:
     - `MulticoreParam()`: threads on a single (non-Windows) machine
     - `SnowParam()`: processes on the same or different machines
     - `BatchJobsParam()`: resource scheduler on a cluster
-    - `DoparParam()`: parallel execution with `foreach()` 
 
 
 ### Exercise: Sleeping serially and in parallel
@@ -407,44 +410,66 @@ f1 <- function(n)
 ```
 <a href="#top">Back to top</a>
 
-### Exercise: error handling and `bpredo()` 
+### Exercise: error handling and `BPREDO` 
 
-`r Biocpkg("BiocParallel")` "catches and returns" errors along with successful
-results. This exercise demonstrates how to access the `traceback()` of
-a failed task and how to re-run the failed tasks with 'BPREDO'.
-Full details on error handling, logging and debugging are in the
-[Errors, Logs and
-Debugging](http://www.bioconductor.org/packages/3.2/bioc/vignettes/BiocParallel/inst/doc/Errors_Logs_And_Debugging.pdf)
-vignette.
+`r Biocpkg("BiocParallel")` "catches and returns" errors along with
+successful results. This exercise demonstrates how to access the
+`traceback()` of a failed task and how to re-run the failed tasks with
+'BPREDO'.  Full details on error handling, logging and debugging are
+in the [Errors, Logs and Debugging][] vignette.
 
-```{r parallel-bpredo-param, eval=FALSE}
+```{r parallel-bpredo-param}
 param <- MulticoreParam(workers = 3)
-param
 ```
 
 Call the `sqrt()` function across 'X'; the second element is a character
 and will throw and error.
 
-```{r parallel-bpredo-bplapply, eval=FALSE}
+```{r parallel-bpredo-bplapply, error=TRUE}
 X <- list(1, "2", 3)
 res <- bplapply(X, sqrt, BPPARAM = param)
+```
+
+It's also possible to catch the error and partially evaluated result
+
+```{r parallel-bptry}
+res <- bptry(bplapply(X, sqrt, BPPARAM=param))
 res
 ```
 
-Along with the error message, the traceback is stored in the return list
-element and can be accessed with `attr()`:
+Re-run the failed results by repeating the call to `bplapply()` this
+time with corrected input data and the partial results as
+'BPREDO'. Only the failed values are re-run.
 
-```{r parallel-bpredo-traceback, eval=FALSE}
-attr(res[[2]], "traceback")
-```
-
-Re-run the failed results by repeating the call to `bplapply()` this 
-time with corrected input data and the partial results as 'BPREDO'.
-
-```{r parallel-bpredo, eval=FALSE}
+```{r parallel-bpredo}
 X.redo <- list(1, 2, 3)
 bplapply(X.redo, sqrt, BPREDO = res)
 ```
+
+Alternatively, switch to a `SerialParam()` and debug the specific
+element that caused the error.
+
+```{r parallel-debug, eval=FALSE}
+> fun = function(i) { browser(); sqrt(i) }
+> bplapply(X, fun, BPREDO=res, BPPARAM=SerialParam())
+resuming previous calculation ... 
+Called from: FUN(...)
+Browse[1]> 
+debug at #1: sqrt(i)
+Browse[2]> i
+[1] "2"
+Browse[2]> i = 2
+Browse[2]> c
+[[1]]
+[1] 1
+
+[[2]]
+[1] 1.414214
+
+[[3]]
+[1] 1.732051
+```
+
 <a href="#top">Back to top</a>
 
 ### Exercise: logging
@@ -643,3 +668,5 @@ cts[[1]]
 - GenomicFiles: http://bioconductor.org/packages/release/bioc/html/GenomicFiles.html
 
 <a href="#top">Back to top</a>
+
+[Errors, Logs and Debugging]: http://www.bioconductor.org/packages/3.2/bioc/vignettes/BiocParallel/inst/doc/Errors_Logs_And_Debugging.pdf

@@ -1,17 +1,26 @@
-Package: BioC2015LargeData 
-Version: 0.0.1
-Title: BioC 2015 Lab Resources for 
-    'Management and analysis of large genomic data'
+Package: EfficientScalableLab
+Version: 0.0.2
+Title: Lab Resources for Efficient, Scalable Analysis
 Description: This package contains lab vignettes, data,
-    and short functions for use in parts of the BioC 2015 lab lead
-    by Valerie Obenchain and Martin Morgan.
+    and short functions for use in short courses addressing efficient, scalable
+    code for management and analysis of large genomic data.
 Authors@R: c(
     person("Valerie", "Obenchain", email="vobencha@fredhutch.org", role="cre"),
     person("Martin", "Morgan", email="mtmorgan@fredhutch.org", role="aut"))
-Depends: IRanges, GenomicRanges, BiocParallel, GenomicAlignments, GenomicFiles,
+Depends:
+    IRanges,
+    GenomicRanges,
+    BiocParallel,
+    GenomicAlignments,
+    GenomicFiles,
     Rsamtools
-Suggests: BiocStyle, knitr, rmarkdown, microbenchmark,
+Suggests:
+    BiocStyle,
+    knitr,
+    rmarkdown,
+    microbenchmark,
     RNAseqData.HNRNPC.bam.chr14
 VignetteBuilder: knitr
 License: Artistic-2.0
-URL: http://www.bioconductor.org/help/course-materials/2015/BioC2015/ 
+URL: https://bioconductor.org/help/course-materials
+RoxygenNote: 5.0.1
