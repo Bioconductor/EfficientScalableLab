@@ -552,7 +552,7 @@ Distribute files over workers: `GenomicFiles::reduceByFile()`
 The previous counting example used `GenomicFiles::reduceByYield()` which
 operates on a single file and implements a yield, map, reduce paradigm.
 In this exercise we'll use `GenomicFiles::reduceByFile()` which uses
-`bplaply()` under the hood to operate on multiple files in parallel.
+`bplapply()` under the hood to operate on multiple files in parallel.
 
 Primary arguments to `reduceByFile()` are a set of files and a set of ranges.
 Files are sent to the workers and data subsets are extracted based on the
